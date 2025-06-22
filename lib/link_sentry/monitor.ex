@@ -5,9 +5,9 @@ defmodule LinkSentry.Monitor do
   def check_link(link) do
     start_time = System.monotonic_time(:millisecond)
 
-    request = Finch.build(:get, link.url)
+    request = Finch.build(:head, link.url)
 
-    case Finch.request(request, LinkSentryFinch, receive_timeout: 30_000, pool_timeout: 10_000) do
+    case Finch.request(request, LinkSentryFinch) do
       {:ok, %Finch.Response{status: status_code}} ->
         response_time = System.monotonic_time(:millisecond) - start_time
         handle_successful_check(link, status_code, response_time)
